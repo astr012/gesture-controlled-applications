@@ -1,0 +1,12 @@
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: var(--color-text-primary);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

@@ -1,0 +1,71 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+.statsRow {
+  margin-bottom: 8px;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+}
+
+.projectsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .sidebar > * {
+    flex: 1;
+    min-width: 280px;
+  }
+}

@@ -1,0 +1,70 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.projectCard {
+  display: flex;
+  flex-direction: column;
+  transition: all 200ms ease;
+}
+
+.projectCard[data-active="true"] {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 2px var(--color-primary-200);
+}
+
+[data-theme="dark"] .projectCard[data-active="true"] {
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.cardBody {
+  flex: 1;
+}
+
+.projectName {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 6px 0;
+  color: var(--color-text-primary);
+}
+
+.projectDescription {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.version {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}

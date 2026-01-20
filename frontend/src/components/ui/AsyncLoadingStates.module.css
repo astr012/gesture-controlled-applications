@@ -1,0 +1,343 @@
+/* Async loading states styling */
+
+/* Generic error state */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.errorIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.errorMessage {
+  color: #dc2626;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.retryButton {
+  padding: 0.5rem 1rem;
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+}
+
+.retryButton:hover {
+  background: #0056cc;
+}
+
+/* WebSocket loading */
+.websocketLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.statusIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.statusTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #171717;
+  margin-bottom: 0.5rem;
+}
+
+.statusMessage {
+  color: #737373;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.connectionDetails {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.detailItem:last-child {
+  margin-bottom: 0;
+}
+
+.detailItem span:first-child {
+  color: #525252;
+  font-weight: 500;
+}
+
+.detailItem span:last-child {
+  color: #171717;
+  font-family: monospace;
+}
+
+/* Connection status colors */
+.connecting {
+  color: #ff9500;
+}
+
+.connected {
+  color: #34c759;
+}
+
+.disconnected {
+  color: #a3a3a3;
+}
+
+.reconnecting {
+  color: #007aff;
+}
+
+.error {
+  color: #ff3b30;
+}
+
+/* Project loading */
+.projectLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+/* Camera loading */
+.cameraLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  max-width: 450px;
+  margin: 2rem auto;
+  border-left: 4px solid #007aff;
+}
+
+.actionButton {
+  padding: 0.75rem 1.5rem;
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  margin-top: 1rem;
+}
+
+.actionButton:hover {
+  background: #0056cc;
+  transform: translateY(-0.5px);
+}
+
+/* Progress bar */
+.progressBar {
+  width: 100%;
+  height: 4px;
+  background: #f0f0f0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #007aff, #5ac8fa);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  animation: progressShimmer 2s infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Skeleton loading */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeletonLine {
+  background: linear-gradient(90deg, 
+    #f0f0f0 25%, 
+    #e0e0e0 50%, 
+    #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Page loading overlay */
+.pageOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.overlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  min-width: 300px;
+  text-align: center;
+}
+
+.overlayMessage {
+  color: #525252;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .websocketLoading,
+  .projectLoading,
+  .cameraLoading {
+    background: #171717;
+    color: #fafafa;
+  }
+
+  .statusTitle {
+    color: #fafafa;
+  }
+
+  .statusMessage {
+    color: #a3a3a3;
+  }
+
+  .connectionDetails {
+    background: #262626;
+  }
+
+  .detailItem span:first-child {
+    color: #d4d4d4;
+  }
+
+  .detailItem span:last-child {
+    color: #fafafa;
+  }
+
+  .progressBar {
+    background: #404040;
+  }
+
+  .skeletonLine {
+    background: linear-gradient(90deg, 
+      #2a2a2a 25%, 
+      #3a3a3a 50%, 
+      #2a2a2a 75%);
+    background-size: 200% 100%;
+  }
+
+  .pageOverlay {
+    background: rgba(0, 0, 0, 0.95);
+  }
+
+  .overlayContent {
+    background: #171717;
+    color: #fafafa;
+  }
+
+  .overlayMessage {
+    color: #d4d4d4;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .websocketLoading,
+  .projectLoading,
+  .cameraLoading {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .overlayContent {
+    margin: 1rem;
+    min-width: auto;
+    width: calc(100% - 2rem);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    animation: none;
+  }
+
+  .skeletonLine {
+    animation: none;
+  }
+
+  .actionButton:hover,
+  .retryButton:hover {
+    transform: none;
+  }
+}

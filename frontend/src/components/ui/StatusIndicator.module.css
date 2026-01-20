@@ -1,0 +1,210 @@
+/* Apple-Inspired Status Indicator Component */
+
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dot {
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: var(--transition-smooth);
+  position: relative;
+}
+
+/* Size Variants */
+.sm .dot {
+  width: 8px;
+  height: 8px;
+}
+
+.md .dot {
+  width: 12px;
+  height: 12px;
+}
+
+.lg .dot {
+  width: 16px;
+  height: 16px;
+}
+
+.sm .text {
+  font-size: var(--text-xs);
+}
+
+.md .text {
+  font-size: var(--text-sm);
+}
+
+.lg .text {
+  font-size: var(--text-base);
+}
+
+/* Status Colors - Apple Inspired */
+.connected {
+  background-color: var(--green-success);
+  box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.2);
+}
+
+.connecting {
+  background-color: var(--orange-warning);
+  box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
+}
+
+.disconnected {
+  background-color: var(--gray-400);
+  box-shadow: 0 0 0 2px rgba(163, 163, 163, 0.2);
+}
+
+.error {
+  background-color: var(--red-error);
+  box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.2);
+}
+
+.idle {
+  background-color: var(--gray-300);
+  box-shadow: 0 0 0 2px rgba(212, 212, 212, 0.2);
+}
+
+.success {
+  background-color: var(--green-success);
+  box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.2);
+}
+
+.warning {
+  background-color: var(--orange-warning);
+  box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.2);
+}
+
+/* Text Styling */
+.text {
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Pulse Animation */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.pulse::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: inherit;
+  transform: translate(-50%, -50%);
+  animation: pulseRing 2s infinite;
+  opacity: 0.6;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Status-specific text colors */
+.container:has(.connected) .text {
+  color: var(--green-success);
+}
+
+.container:has(.connecting) .text {
+  color: var(--orange-warning);
+}
+
+.container:has(.disconnected) .text {
+  color: var(--gray-500);
+}
+
+.container:has(.error) .text {
+  color: var(--red-error);
+}
+
+.container:has(.idle) .text {
+  color: var(--gray-400);
+}
+
+.container:has(.success) .text {
+  color: var(--green-success);
+}
+
+.container:has(.warning) .text {
+  color: var(--orange-warning);
+}
+
+/* Dark Mode Support (Future) */
+@media (prefers-color-scheme: dark) {
+  .text {
+    color: var(--gray-200);
+  }
+
+  .disconnected {
+    background-color: var(--gray-600);
+  }
+
+  .idle {
+    background-color: var(--gray-500);
+  }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .connected {
+    background-color: #00ff00;
+    box-shadow: 0 0 0 2px #00ff00;
+  }
+
+  .error {
+    background-color: #ff0000;
+    box-shadow: 0 0 0 2px #ff0000;
+  }
+
+  .warning,
+  .connecting {
+    background-color: #ffff00;
+    box-shadow: 0 0 0 2px #ffff00;
+  }
+
+  .disconnected,
+  .idle {
+    background-color: #808080;
+    box-shadow: 0 0 0 2px #808080;
+  }
+
+  .text {
+    color: inherit;
+    font-weight: var(--font-bold);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .pulse,
+  .pulse::before {
+    animation: none;
+  }
+
+  .dot {
+    transition: none;
+  }
+}

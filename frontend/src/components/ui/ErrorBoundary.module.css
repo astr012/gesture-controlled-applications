@@ -1,0 +1,368 @@
+/* Apple-inspired error boundary styling with severity levels */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  background: #fafafa;
+}
+
+.content {
+  max-width: 600px;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 4px solid var(--severity-color, #007aff);
+}
+
+/* Severity-based styling */
+.critical {
+  --severity-color: #ff3b30;
+}
+
+.critical .content {
+  border-left-color: var(--severity-color);
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.high {
+  --severity-color: #ff9500;
+}
+
+.high .content {
+  border-left-color: var(--severity-color);
+  background: linear-gradient(135deg, #fffbf5 0%, #ffffff 100%);
+}
+
+.medium {
+  --severity-color: #007aff;
+}
+
+.medium .content {
+  border-left-color: var(--severity-color);
+}
+
+.low {
+  --severity-color: #34c759;
+}
+
+.low .content {
+  border-left-color: var(--severity-color);
+  background: linear-gradient(135deg, #f5fff8 0%, #ffffff 100%);
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #171717;
+  margin-bottom: 0.5rem;
+}
+
+.message {
+  color: #737373;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.retryCount {
+  color: #a3a3a3;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.details {
+  text-align: left;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e5e5e5;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.details summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: #525252;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.15s ease;
+}
+
+.details summary:hover {
+  background-color: #f0f0f0;
+}
+
+.errorDetails {
+  margin-top: 1rem;
+}
+
+.errorSection {
+  margin-bottom: 1rem;
+}
+
+.errorSection:last-child {
+  margin-bottom: 0;
+}
+
+.errorSection strong {
+  display: block;
+  color: #404040;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.errorText {
+  font-family:
+    'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New',
+    monospace;
+  font-size: 0.75rem;
+  color: #dc2626;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  background: #fef2f2;
+  padding: 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #fecaca;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.reportSection {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.feedbackTextarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.75rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.feedbackTextarea:focus {
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+}
+
+.feedbackTextarea::placeholder {
+  color: #a3a3a3;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.retryButton,
+.refreshButton,
+.reportButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+  min-width: 100px;
+}
+
+.retryButton {
+  background: #007aff;
+  color: white;
+}
+
+.retryButton:hover:not(:disabled) {
+  background: #0056cc;
+  transform: translateY(-0.5px);
+}
+
+.retryButton:disabled {
+  background: #a3a3a3;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.refreshButton {
+  background: #f5f5f5;
+  color: #525252;
+  border: 1px solid #e5e5e5;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: #e5e5e5;
+  transform: translateY(-0.5px);
+}
+
+.refreshButton:disabled {
+  background: #f9f9f9;
+  color: #a3a3a3;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.reportButton {
+  background: #ff9500;
+  color: white;
+}
+
+.reportButton:hover:not(:disabled) {
+  background: #e6850e;
+  transform: translateY(-0.5px);
+}
+
+.reportButton:disabled {
+  background: #a3a3a3;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.errorMeta {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.errorId,
+.timestamp {
+  font-size: 0.75rem;
+  color: #a3a3a3;
+  font-family:
+    'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New',
+    monospace;
+  margin: 0.25rem 0;
+}
+
+.errorId {
+  font-weight: 500;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .container {
+    padding: 1rem;
+    min-height: 300px;
+  }
+
+  .content {
+    padding: 1.5rem;
+    max-width: none;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .retryButton,
+  .refreshButton,
+  .reportButton {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .feedbackTextarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
+/* Dark mode support (future) */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: #0a0a0a;
+  }
+
+  .content {
+    background: #171717;
+    color: #fafafa;
+  }
+
+  .title {
+    color: #fafafa;
+  }
+
+  .message {
+    color: #a3a3a3;
+  }
+
+  .details {
+    background: #262626;
+    border-color: #404040;
+  }
+
+  .details summary {
+    color: #d4d4d4;
+  }
+
+  .details summary:hover {
+    background-color: #404040;
+  }
+
+  .errorText {
+    background: #2d1b1b;
+    border-color: #5c2626;
+    color: #fca5a5;
+  }
+
+  .feedbackTextarea {
+    background: #262626;
+    border-color: #404040;
+    color: #fafafa;
+  }
+
+  .feedbackTextarea:focus {
+    border-color: #0a84ff;
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+  }
+
+  .refreshButton {
+    background: #262626;
+    color: #d4d4d4;
+    border-color: #404040;
+  }
+
+  .refreshButton:hover:not(:disabled) {
+    background: #404040;
+  }
+
+  .errorMeta {
+    border-top-color: #404040;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .retryButton,
+  .refreshButton,
+  .reportButton {
+    transition: none;
+  }
+
+  .retryButton:hover:not(:disabled),
+  .refreshButton:hover:not(:disabled),
+  .reportButton:hover:not(:disabled) {
+    transform: none;
+  }
+}

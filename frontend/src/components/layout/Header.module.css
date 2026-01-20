@@ -1,0 +1,186 @@
+/* Apple-Inspired Header Component */
+
+.header {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-4) 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: var(--transition-smooth);
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.sidebarToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; /* Touch-friendly size */
+  height: 44px;
+  border-radius: 8px;
+  background: var(--gray-100);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  touch-action: manipulation; /* Optimize for touch */
+}
+
+.sidebarToggle:hover {
+  background: var(--gray-200);
+  transform: translateY(-1px);
+}
+
+.sidebarToggle:active {
+  transform: translateY(0);
+  background: var(--gray-300);
+}
+
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.appTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.appSubtitle {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: var(--font-medium);
+  line-height: 1.2;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/* Tablet Responsive Design */
+@media (max-width: 1024px) {
+  .headerContent {
+    gap: var(--space-3);
+  }
+
+  .leftSection {
+    gap: var(--space-3);
+  }
+
+  .appTitle {
+    font-size: var(--text-xl);
+  }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    padding: var(--space-3) 0;
+  }
+
+  .headerContent {
+    gap: var(--space-3);
+  }
+
+  .leftSection {
+    gap: var(--space-3);
+    flex: 1;
+  }
+
+  .sidebarToggle {
+    width: 48px; /* Larger touch target on mobile */
+    height: 48px;
+    border-radius: 12px;
+  }
+
+  .logoSection {
+    flex: 1;
+    text-align: center;
+  }
+
+  .appTitle {
+    font-size: var(--text-lg);
+  }
+
+  .appSubtitle {
+    font-size: var(--text-xs);
+  }
+
+  .rightSection {
+    gap: var(--space-2);
+  }
+}
+
+/* Small Mobile Responsive Design */
+@media (max-width: 480px) {
+  .headerContent {
+    gap: var(--space-2);
+  }
+
+  .leftSection {
+    gap: var(--space-2);
+  }
+
+  .appTitle {
+    font-size: var(--text-base);
+  }
+
+  .appSubtitle {
+    display: none; /* Hide subtitle on very small screens */
+  }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .header {
+    padding: var(--space-2) 0;
+  }
+
+  .appTitle {
+    font-size: var(--text-base);
+  }
+
+  .appSubtitle {
+    display: none;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .sidebarToggle {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .sidebarToggle:hover {
+    transform: none; /* Disable hover animations on touch */
+    background: var(--gray-100);
+  }
+
+  .sidebarToggle:active {
+    background: var(--gray-300);
+    transform: scale(0.95);
+  }
+}

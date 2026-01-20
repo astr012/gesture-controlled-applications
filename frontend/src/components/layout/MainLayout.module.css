@@ -1,0 +1,140 @@
+/* Apple-Inspired Main Layout */
+
+.appLayout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.mainContainer {
+  flex: 1;
+  padding: var(--space-8) 0;
+  background: var(--bg-primary);
+  position: relative;
+}
+
+.mainGrid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-8);
+  min-height: 600px;
+  position: relative;
+}
+
+.content {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  min-height: 600px;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+  padding: var(--space-6);
+}
+
+.content:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Mobile Overlay for Sidebar */
+.mobileOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.mobileOverlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Grid collapsed state */
+.mainGrid.sidebarCollapsed {
+  grid-template-columns: 80px 1fr;
+}
+
+/* Tablet Responsive Design */
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .mainGrid.sidebarCollapsed {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .mainContainer {
+    padding: var(--space-4) 0;
+    padding-bottom: 80px; /* Space for bottom navigation */
+  }
+
+  .mainGrid {
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+    min-height: calc(100vh - 160px);
+  }
+
+  .content {
+    border-radius: 12px;
+    padding: var(--space-4);
+    min-height: auto;
+  }
+}
+
+/* Small Mobile Responsive Design */
+@media (max-width: 480px) {
+  .mainContainer {
+    padding: var(--space-3) 0;
+    padding-bottom: 80px;
+  }
+
+  .mainGrid {
+    gap: var(--space-3);
+  }
+
+  .content {
+    border-radius: 8px;
+    padding: var(--space-3);
+    border: none;
+    box-shadow: none;
+    background: var(--bg-primary);
+  }
+}
+
+/* Landscape Mobile Optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .mainContainer {
+    padding: var(--space-2) 0;
+    padding-bottom: 60px; /* Smaller bottom nav in landscape */
+  }
+
+  .mainGrid {
+    min-height: calc(100vh - 120px);
+  }
+
+  .content {
+    padding: var(--space-3);
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .content:hover {
+    box-shadow: var(--shadow-sm); /* Disable hover effects on touch devices */
+    transform: none;
+  }
+}

@@ -1,119 +1,155 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Professional gesture control platform with real-time computer vision and machine learning capabilities"
+    />
+    <meta name="theme-color" content="#007AFF" />
+    <title>Gesture Control Platform</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
-  <meta name="description"
-    content="Professional gesture control platform with real-time computer vision and machine learning capabilities" />
-  <meta name="theme-color" content="#007AFF" />
-  <title>Gesture Control Platform</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Apple-style preload for better performance -->
-  <link rel="preconnect" href="ws://localhost:8000" />
+    <!-- Apple-style preload for better performance -->
+    <link rel="preconnect" href="ws://localhost:8000" />
 
-  <!-- Apple-inspired favicon and touch icons -->
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <!-- Apple-inspired favicon and touch icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 
-  <style>
-    /* Apple-style loading screen */
-    #loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.3s ease;
-    }
-
-    .loading-spinner {
-      width: 32px;
-      height: 32px;
-      border: 2px solid #e5e5e5;
-      border-top: 2px solid #007AFF;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
+    <style>
+      /* Apple-style loading screen */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
       }
 
-      100% {
-        transform: rotate(360deg);
+      .loading-spinner {
+        width: 32px;
+        height: 32px;
+        border: 2px solid #e5e5e5;
+        border-top: 2px solid #007aff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
       }
-    }
 
-    .loading-text {
-      margin-left: 16px;
-      color: #737373;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Apple-style loading screen -->
-  <div id="loading-screen">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">Loading Gesture Control Platform...</div>
-  </div>
-
-  <!-- Polyfill process.env for compatibility -->
-  <script>
-    window.process = {
-      env: {
-        NODE_ENV: 'development',
-        REACT_APP_VERSION: '1.0.0'
-      }
-    };
-  </script>
-
-  <div id="root"></div>
-  <!-- Error Overlay for Debugging -->
-  <div id="debug-error-overlay"
-    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.9); color:red; z-index:9999; padding:20px; overflow:auto; font-family:monospace;">
-    <h3>Runtime Error Detected:</h3>
-    <pre id="debug-error-content"></pre>
-  </div>
-  <script>
-    window.onerror = function (msg, url, line, col, error) {
-      document.getElementById('debug-error-overlay').style.display = 'block';
-      document.getElementById('debug-error-content').innerText = msg + '\n' + url + ':' + line + ':' + col + '\n' + (error ? error.stack : '');
-    };
-    window.addEventListener('unhandledrejection', function (event) {
-      document.getElementById('debug-error-overlay').style.display = 'block';
-      document.getElementById('debug-error-content').innerText += '\nUnhandled Rejection: ' + event.reason;
-    });
-  </script>
-  <script type="module" src="/src/main.tsx"></script>
-
-  <script>
-    // Hide loading screen when app is ready
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        const loadingScreen = document.getElementById('loading-screen');
-        if (loadingScreen) {
-          loadingScreen.style.opacity = '0';
-          setTimeout(() => {
-            loadingScreen.remove();
-          }, 300);
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-      }, 500);
-    });
-  </script>
-</body>
 
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        margin-left: 16px;
+        color: #737373;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Apple-style loading screen -->
+    <div id="loading-screen">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading Gesture Control Platform...</div>
+    </div>
+
+    <!-- Polyfill process.env for compatibility -->
+    <script>
+      window.process = {
+        env: {
+          NODE_ENV: 'development',
+          REACT_APP_VERSION: '1.0.0',
+        },
+      };
+    </script>
+
+    <div id="root"></div>
+    <!-- Error Overlay for Debugging -->
+    <div
+      id="debug-error-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        color: red;
+        z-index: 9999;
+        padding: 20px;
+        overflow: auto;
+        font-family: monospace;
+      "
+    >
+      <h3>Runtime Error Detected:</h3>
+      <pre id="debug-error-content"></pre>
+    </div>
+    <script>
+      window.onerror = function (msg, url, line, col, error) {
+        document.getElementById('debug-error-overlay').style.display = 'block';
+        document.getElementById('debug-error-content').innerText =
+          msg +
+          '\n' +
+          url +
+          ':' +
+          line +
+          ':' +
+          col +
+          '\n' +
+          (error ? error.stack : '');
+      };
+      window.addEventListener('unhandledrejection', function (event) {
+        document.getElementById('debug-error-overlay').style.display = 'block';
+        document.getElementById('debug-error-content').innerText +=
+          '\nUnhandled Rejection: ' + event.reason;
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <script>
+      // Hide loading screen when app is ready
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+              loadingScreen.remove();
+            }, 300);
+          }
+        }, 500);
+      });
+    </script>
+  </body>
 </html>

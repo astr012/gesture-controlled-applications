@@ -1,5 +1,6 @@
 /**
  * Main gesture data visualization component
+ * Uses Tailwind CSS for all styling.
  */
 
 import React from 'react';
@@ -12,7 +13,6 @@ import {
 import { FingerCountDisplay } from './FingerCountDisplay';
 import { VolumeControlDisplay } from './VolumeControlDisplay';
 import { VirtualMouseDisplay } from './VirtualMouseDisplay';
-import styles from './GestureDisplay.module.css';
 
 interface Props {
   gestureData: GestureData | null;
@@ -21,11 +21,15 @@ interface Props {
 export const GestureDisplay: React.FC<Props> = ({ gestureData }) => {
   if (!gestureData) {
     return (
-      <div className={styles.container}>
-        <div className={styles.noData}>
-          <div className={styles.noDataIcon}>👋</div>
-          <h3>No gesture data</h3>
-          <p>Select a project and ensure your camera is working</p>
+      <div className="flex items-center justify-center min-h-[300px] p-8">
+        <div className="text-center">
+          <div className="text-4xl mb-4">&#128075;</div>
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
+            No gesture data
+          </h3>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            Select a project and ensure your camera is working
+          </p>
         </div>
       </div>
     );
@@ -41,7 +45,7 @@ export const GestureDisplay: React.FC<Props> = ({ gestureData }) => {
         return <VirtualMouseDisplay data={gestureData as VirtualMouseData} />;
       default:
         return (
-          <div className={styles.unknownProject}>
+          <div className="p-4 text-center text-neutral-600 dark:text-neutral-400">
             <p>Unknown project: {gestureData.project}</p>
           </div>
         );
@@ -49,21 +53,26 @@ export const GestureDisplay: React.FC<Props> = ({ gestureData }) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h2 className={styles.title}>Gesture Detection</h2>
-        <div className={styles.metadata}>
-          <span className={styles.handsCount}>
+    <div className="flex flex-col gap-4">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-700">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          Gesture Detection
+        </h2>
+        <div className="flex items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-success-500" />
             Hands detected: {gestureData.hands_detected}
           </span>
-          <span className={styles.timestamp}>
+          <span>
             Last update:{' '}
             {new Date(gestureData.timestamp * 1000).toLocaleTimeString()}
           </span>
         </div>
       </div>
 
-      <div className={styles.content}>{renderProjectDisplay()}</div>
+      {/* Content */}
+      <div>{renderProjectDisplay()}</div>
     </div>
   );
 };

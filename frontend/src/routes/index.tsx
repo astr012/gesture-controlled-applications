@@ -5,9 +5,13 @@ import RouteErrorBoundary from '@/components/ui/RouteErrorBoundary';
 import SuspenseWrapper from '@/components/ui/SuspenseWrapper';
 import ProjectLoader from '@/components/ProjectLoader';
 import PerformanceMonitor from '@/services/PerformanceMonitor';
+import { AlertTriangle } from 'lucide-react';
 
 // Performance-tracked lazy loading
-const createLazyComponent = (importFn: () => Promise<any>, routeName: string) => {
+const createLazyComponent = (
+  importFn: () => Promise<any>,
+  routeName: string
+) => {
   return lazy(async () => {
     const startTime = performance.now();
     const module = await importFn();
@@ -21,8 +25,14 @@ const createLazyComponent = (importFn: () => Promise<any>, routeName: string) =>
 };
 
 // Lazy load page components for code splitting with performance tracking
-const Dashboard = createLazyComponent(() => import('@/pages/Dashboard'), 'Dashboard');
-const NotFound = createLazyComponent(() => import('@/pages/NotFound'), 'NotFound');
+const Dashboard = createLazyComponent(
+  () => import('@/pages/Dashboard'),
+  'Dashboard'
+);
+const NotFound = createLazyComponent(
+  () => import('@/pages/NotFound'),
+  'NotFound'
+);
 
 // Route configuration with enhanced code splitting and deep linking
 const routes: RouteObject[] = [
@@ -35,30 +45,20 @@ const routes: RouteObject[] = [
     ),
     errorElement: (
       <RouteErrorBoundary>
-        <div style={{
-          padding: '2rem',
-          textAlign: 'center',
-          background: 'white',
-          borderRadius: '12px',
-          margin: '2rem',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛣️</div>
-          <h2 style={{ color: '#171717', marginBottom: '0.5rem' }}>Route Error</h2>
-          <p style={{ color: '#737373', marginBottom: '1.5rem' }}>
-            There was an error loading this page. Please try refreshing or go back to the dashboard.
+        <div className="flex flex-col items-center justify-center p-8 m-8 bg-white dark:bg-neutral-900 rounded-xl shadow-glass border border-neutral-200 dark:border-neutral-800 text-center">
+          <div className="mb-4 text-error-500">
+            <AlertTriangle size={48} />
+          </div>
+          <h2 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+            Route Error
+          </h2>
+          <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+            There was an error loading this page. Please try refreshing or go
+            back to the dashboard.
           </p>
           <button
-            onClick={() => window.location.href = '/'}
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: '#007aff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontWeight: '500'
-            }}
+            onClick={() => (window.location.href = '/')}
+            className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
           >
             Go to Dashboard
           </button>

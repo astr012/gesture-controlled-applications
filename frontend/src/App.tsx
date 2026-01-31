@@ -1,6 +1,7 @@
 import { RouterProvider } from 'react-router-dom';
 import { GlobalProvider } from '@/context/GlobalContext';
 import { ProjectProvider } from '@/context/ProjectContext';
+import { WebSocketProvider } from '@/context/WebSocketContext';
 import router from '@/routes';
 import AppErrorBoundary from '@/components/ui/AppErrorBoundary';
 import DebugToggle from '@/components/debug/DebugToggle';
@@ -197,12 +198,14 @@ function App() {
   return (
     <AppErrorBoundary>
       <Suspense fallback={<AppLoadingFallback />}>
-        <GlobalProvider>
-          <ProjectProvider>
-            <RouterProvider router={router} />
-            <DebugToggle />
-          </ProjectProvider>
-        </GlobalProvider>
+        <WebSocketProvider>
+          <GlobalProvider>
+            <ProjectProvider>
+              <RouterProvider router={router} />
+              <DebugToggle />
+            </ProjectProvider>
+          </GlobalProvider>
+        </WebSocketProvider>
       </Suspense>
     </AppErrorBoundary>
   );

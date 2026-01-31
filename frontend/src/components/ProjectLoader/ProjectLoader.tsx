@@ -13,6 +13,7 @@ import {
   type ProjectConfig,
 } from '@/projects/registry';
 import { useProjectContext } from '@/hooks/useProjectContext';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import ProjectErrorBoundary from '@/components/ui/ProjectErrorBoundary';
 import { ProjectLoading } from '@/components/ui/AsyncLoadingStates';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
@@ -35,9 +36,10 @@ const ProjectLoadingFallback: React.FC<{ projectName: string }> = ({ projectName
   </div>
 );
 
-const ProjectLoader: React.FC<ProjectLoaderProps> = ({ projectId: propProjectId, gestureData }) => {
+const ProjectLoader: React.FC<ProjectLoaderProps> = ({ projectId: propProjectId, gestureData: propsGestureData }) => {
   const { projectId: paramProjectId } = useParams<{ projectId: string }>();
   const { state, actions } = useProjectContext();
+  const { gestureData: wsGestureData, selectProject: wsSelectProject, connectionStatus } = useWebSocket();
   const [projectConfig, setProjectConfig] = useState<ProjectConfig | null>(null);
   const [ProjectComponent, setProjectComponent] = useState<React.ComponentType<any> | null>(null);
   const [loadingStage, setLoadingStage] = useState<'discovering' | 'loading' | 'initializing' | 'ready' | 'error'>('discovering');
@@ -49,6 +51,16 @@ const ProjectLoader: React.FC<ProjectLoaderProps> = ({ projectId: propProjectId,
   // Determine project ID from props or URL params
   const urlProjectId = propProjectId || paramProjectId;
   const actualProjectId = urlProjectId ? urlToProjectId(urlProjectId) || urlProjectId as ProjectType : null;
+
+  // Use gesture data from WebSocket if available, otherwise from props or context
+  const gestureData = wsGestureData || propsGestureData || state.gestureData;
+
+  // Select project on WebSocket when project loads
+  useEffect(() => {
+    if (actualProjectId && connectionStatus.connected) {
+      wsSelectProject(actualProjectId);
+    }
+  }, [actualProjectId, connectionStatus.connected, wsSelectProject]);
 
   const loadProjectModule = async (projectId: ProjectType) => {
     try {
@@ -184,7 +196,7 @@ const ProjectLoader: React.FC<ProjectLoaderProps> = ({ projectId: propProjectId,
 
           <div className={styles.projectContent}>
             <ProjectComponent
-              gestureData={gestureData || state.gestureData}
+              gestureData={gestureData}
               settings={state.settings}
               onSettingsChange={actions.updateSettings}
             />

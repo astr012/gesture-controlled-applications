@@ -1,22 +1,18 @@
 /**
  * DashboardLayout Component
- * 
- * Layout wrapper with dashboard-specific styles.
+ *
+ * Layout wrapper for dashboard content.
+ * Uses Tailwind CSS for all styling.
  */
 
 import React from 'react';
-import styles from './DashboardLayout.module.css';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
-  return (
-    <div className={styles.layout}>
-      {children}
-    </div>
-  );
+  return <div className="max-w-7xl mx-auto">{children}</div>;
 };
 
 export default DashboardLayout;

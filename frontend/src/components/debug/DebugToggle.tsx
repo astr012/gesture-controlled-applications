@@ -1,31 +1,41 @@
+/**
+ * DebugToggle Component
+ *
+ * Floating debug controls for development mode.
+ * Uses Tailwind CSS v4 and Lucide Icons.
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useGlobalContext } from '@/hooks/useGlobalContext';
 import DebugPanel from './DebugPanel';
 import ErrorTestingPanel from './ErrorTestingPanel';
-import styles from './DebugToggle.module.css';
+import { Wrench, FlaskConical, Terminal } from 'lucide-react';
 
 export function DebugToggle() {
-  const { state, debug } = useGlobalContext();
+  const { debug } = useGlobalContext();
   const [isDebugPanelVisible, setIsDebugPanelVisible] = useState(false);
   const [isErrorTestingVisible, setIsErrorTestingVisible] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Only show in development mode
   useEffect(() => {
     setIsVisible(process.env.NODE_ENV === 'development');
   }, []);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Ctrl/Cmd + Shift + D for debug panel
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'D') {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.shiftKey &&
+        event.key === 'D'
+      ) {
         event.preventDefault();
         setIsDebugPanelVisible(prev => !prev);
       }
-      
-      // Ctrl/Cmd + Shift + E for error testing panel
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'E') {
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.shiftKey &&
+        event.key === 'E'
+      ) {
         event.preventDefault();
         setIsErrorTestingVisible(prev => !prev);
       }
@@ -41,28 +51,43 @@ export function DebugToggle() {
 
   return (
     <>
-      <div className={styles.debugControls}>
+      <div className="fixed bottom-6 left-6 flex flex-col gap-3 z-[999]">
         <button
-          className={styles.debugToggle}
+          className="
+            flex items-center justify-center w-12 h-12 rounded-full 
+            bg-neutral-900 border border-neutral-700 shadow-xl 
+            text-neutral-400 hover:text-white hover:scale-110 
+            transition-all duration-200 relative group
+          "
           onClick={() => setIsDebugPanelVisible(!isDebugPanelVisible)}
           title="Toggle Debug Panel (Ctrl/Cmd + Shift + D)"
-          aria-label="Toggle Debug Panel"
         >
-          <span className={styles.icon}>🔧</span>
-          {debug.isEnabled && (
-            <span className={styles.badge}>
+          <Terminal size={20} />
+          {debug.isEnabled && debug.stateHistory.length > 0 && (
+            <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-primary-500 text-white text-[10px] font-bold shadow-lg">
               {debug.stateHistory.length}
             </span>
           )}
+
+          <div className="absolute left-full ml-3 px-2 py-1 bg-neutral-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Debug Tools
+          </div>
         </button>
 
         <button
-          className={styles.errorTestingToggle}
+          className="
+            flex items-center justify-center w-12 h-12 rounded-full 
+            bg-neutral-900 border border-neutral-700 shadow-xl 
+            text-neutral-400 hover:text-rose-400 hover:scale-110 
+            transition-all duration-200 group relative
+          "
           onClick={() => setIsErrorTestingVisible(!isErrorTestingVisible)}
           title="Toggle Error Testing Panel (Ctrl/Cmd + Shift + E)"
-          aria-label="Toggle Error Testing Panel"
         >
-          <span className={styles.icon}>🧪</span>
+          <FlaskConical size={20} />
+          <div className="absolute left-full ml-3 px-2 py-1 bg-neutral-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+            Error Lab
+          </div>
         </button>
       </div>
 

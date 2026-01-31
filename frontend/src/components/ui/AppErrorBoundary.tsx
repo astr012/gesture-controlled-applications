@@ -1,161 +1,85 @@
 /**
- * App-level Error Boundary - Catches catastrophic errors and provides app-wide fallback
- * This is the highest level error boundary that should never fail
+ * AppErrorBoundary Component
+ *
+ * A top-level error boundary for the entire application.
+ * Uses Tailwind CSS for all styling.
  */
 
-import React from 'react';
-import ErrorBoundary, { type ErrorLogger, type ErrorContext } from './ErrorBoundary';
-import type { ErrorInfo } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
-interface AppErrorBoundaryProps {
-  children: React.ReactNode;
-  logger?: ErrorLogger;
+interface Props {
+  children: ReactNode;
 }
 
-// App-level error logger with enhanced reporting
-class AppErrorLogger implements ErrorLogger {
-  logError(error: Error, errorInfo: ErrorInfo, context: ErrorContext, severity: 'low' | 'medium' | 'high' | 'critical'): void {
-    const logData = {
-      level: 'app',
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      },
-      errorInfo: {
-        componentStack: errorInfo.componentStack,
-      },
-      context: {
-        ...context,
-        level: 'app',
-      },
-      severity,
-      timestamp: Date.now(),
-      url: window.location.href,
-      userAgent: navigator.userAgent,
-      viewport: {
-        width: window.innerWidth,
-        height: window.innerHeight,
-      },
-      memory: (performance as any).memory ? {
-        usedJSHeapSize: (performance as any).memory.usedJSHeapSize,
-        totalJSHeapSize: (performance as any).memory.totalJSHeapSize,
-        jsHeapSizeLimit: (performance as any).memory.jsHeapSizeLimit,
-      } : undefined,
-    };
-
-    // Always log app-level errors to console
-    console.group('🚨 APP-LEVEL ERROR');
-    console.error('Error:', error);
-    console.error('Error Info:', errorInfo);
-    console.log('Context:', context);
-    console.log('Full Log Data:', logData);
-    console.groupEnd();
-
-    // Store in localStorage for debugging
-    try {
-      const appErrors = JSON.parse(localStorage.getItem('app-errors') || '[]');
-      appErrors.push(logData);
-      // Keep only last 10 app errors
-      if (appErrors.length > 10) {
-        appErrors.splice(0, appErrors.length - 10);
-      }
-      localStorage.setItem('app-errors', JSON.stringify(appErrors));
-    } catch (storageError) {
-      console.warn('Failed to store app error:', storageError);
-    }
-
-    // In production, send to error monitoring service immediately
-    if (process.env.NODE_ENV === 'production') {
-      // Critical app errors should be reported immediately
-      // Example: Sentry.captureException(error, { 
-      //   level: 'fatal',
-      //   extra: logData,
-      //   tags: { errorBoundary: 'app' }
-      // });
-
-      // Also send to analytics
-      // Example: analytics.track('App Error', logData);
-    }
-  }
-
-  logUserAction(action: string, context: Partial<ErrorContext>): void {
-    console.log(`👤 App User Action: ${action}`, context);
-
-    // Track user actions in app-level errors for better debugging
-    try {
-      const userActions = JSON.parse(sessionStorage.getItem('user-actions') || '[]');
-      userActions.push({
-        action,
-        context,
-        timestamp: Date.now(),
-        level: 'app',
-      });
-      // Keep only last 50 actions
-      if (userActions.length > 50) {
-        userActions.splice(0, userActions.length - 50);
-      }
-      sessionStorage.setItem('user-actions', JSON.stringify(userActions));
-    } catch (storageError) {
-      console.warn('Failed to store user action:', storageError);
-    }
-  }
+interface State {
+  hasError: boolean;
+  error: Error | null;
 }
 
-const AppErrorBoundary: React.FC<AppErrorBoundaryProps> = ({
-  children,
-  logger
-}) => {
-  const appLogger = logger || new AppErrorLogger();
+class AppErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
 
-  const handleAppError = (error: Error, errorInfo: ErrorInfo, context: ErrorContext) => {
-    // App-level errors are always critical
-    console.error('App-level error occurred:', error);
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
 
-    // Try to save application state before potential crash
-    try {
-      const appState = {
-        url: window.location.href,
-        timestamp: Date.now(),
-        error: error.message,
-        userAgent: navigator.userAgent,
-      };
-      localStorage.setItem('last-app-error-state', JSON.stringify(appState));
-    } catch (stateError) {
-      console.warn('Failed to save app state:', stateError);
-    }
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('AppErrorBoundary caught an error:', error, errorInfo);
+  }
+
+  handleReload = () => {
+    window.location.reload();
   };
 
-  const handleRetry = () => {
-    // For app-level errors, we might want to reset more state
-    console.log('App-level retry initiated');
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950 p-4">
+          <div className="max-w-md w-full bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 p-8 text-center">
+            <div className="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full bg-error-100 dark:bg-error-500/20">
+              <svg
+                className="w-10 h-10 text-error-600 dark:text-error-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
 
-    // Clear any potentially corrupted state
-    try {
-      sessionStorage.removeItem('app-state');
-      sessionStorage.removeItem('user-actions');
-    } catch (clearError) {
-      console.warn('Failed to clear session state:', clearError);
+            <h1 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+              Application Error
+            </h1>
+
+            <p className="mb-6 text-neutral-600 dark:text-neutral-400">
+              Something went wrong. Please try refreshing the page.
+            </p>
+
+            <div className="p-4 mb-6 text-left bg-neutral-100 dark:bg-neutral-800 rounded-lg">
+              <p className="text-xs font-mono text-neutral-600 dark:text-neutral-400 break-all">
+                {this.state.error?.message || 'Unknown error'}
+              </p>
+            </div>
+
+            <button
+              onClick={this.handleReload}
+              className="w-full py-3 px-4 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Reload Application
+            </button>
+          </div>
+        </div>
+      );
     }
-  };
 
-  return (
-    <ErrorBoundary
-      level="app"
-      context={{
-        component: 'AppErrorBoundary',
-        buildVersion: process.env.REACT_APP_VERSION || 'unknown',
-      }}
-      onError={handleAppError}
-      onRetry={handleRetry}
-      showRetry={true}
-      showRefresh={true}
-      showReportBug={true}
-      logger={appLogger}
-    >
-      {children}
-    </ErrorBoundary>
-  );
-};
+    return this.props.children;
+  }
+}
 
 export default AppErrorBoundary;

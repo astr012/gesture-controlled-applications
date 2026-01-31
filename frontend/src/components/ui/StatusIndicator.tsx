@@ -1,77 +1,71 @@
-import React from 'react';
-import styles from './StatusIndicator.module.css';
+/**
+ * StatusIndicator Component
+ *
+ * Shows connection and system status.
+ * Uses Tailwind CSS for all styling.
+ */
 
-export type StatusType = 'connected' | 'connecting' | 'disconnected' | 'error' | 'idle' | 'success' | 'warning';
+import React from 'react';
+
+export type StatusType = 'connected' | 'connecting' | 'disconnected' | 'error';
 
 export interface StatusIndicatorProps {
   status: StatusType;
-  showText?: boolean;
-  text?: string;
+  label?: string;
+  showLabel?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  pulse?: boolean;
   className?: string;
 }
 
+const statusColors: Record<StatusType, { dot: string; text: string }> = {
+  connected: {
+    dot: 'bg-success-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]',
+    text: 'text-success-600 dark:text-success-400',
+  },
+  connecting: {
+    dot: 'bg-warning-500 animate-pulse',
+    text: 'text-warning-600 dark:text-warning-400',
+  },
+  disconnected: {
+    dot: 'bg-neutral-400',
+    text: 'text-neutral-500',
+  },
+  error: {
+    dot: 'bg-error-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]',
+    text: 'text-error-600 dark:text-error-400',
+  },
+};
+
+const statusLabels: Record<StatusType, string> = {
+  connected: 'Connected',
+  connecting: 'Connecting...',
+  disconnected: 'Disconnected',
+  error: 'Error',
+};
+
+const sizeClasses = {
+  sm: { dot: 'w-1.5 h-1.5', text: 'text-xs' },
+  md: { dot: 'w-2 h-2', text: 'text-sm' },
+  lg: { dot: 'w-3 h-3', text: 'text-base' },
+};
+
 const StatusIndicator: React.FC<StatusIndicatorProps> = ({
   status,
-  showText = false,
-  text,
+  label,
+  showLabel = true,
   size = 'md',
-  pulse = false,
   className = '',
 }) => {
-  const getStatusText = (status: StatusType): string => {
-    if (text) return text;
-    
-    const statusTexts: Record<StatusType, string> = {
-      connected: 'Connected',
-      connecting: 'Connecting...',
-      disconnected: 'Disconnected',
-      error: 'Error',
-      idle: 'Idle',
-      success: 'Success',
-      warning: 'Warning',
-    };
-    
-    return statusTexts[status];
-  };
-
-  const getAriaLabel = (status: StatusType): string => {
-    const ariaLabels: Record<StatusType, string> = {
-      connected: 'Connection status: Connected',
-      connecting: 'Connection status: Connecting',
-      disconnected: 'Connection status: Disconnected',
-      error: 'Connection status: Error',
-      idle: 'Connection status: Idle',
-      success: 'Status: Success',
-      warning: 'Status: Warning',
-    };
-    
-    return ariaLabels[status];
-  };
-
-  const containerClasses = [
-    styles.container,
-    styles[size],
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const dotClasses = [
-    styles.dot,
-    styles[status],
-    pulse && styles.pulse,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const colors = statusColors[status];
+  const sizes = sizeClasses[size];
+  const displayLabel = label || statusLabels[status];
 
   return (
-    <div className={containerClasses} role="status" aria-label={getAriaLabel(status)}>
-      <span className={dotClasses} aria-hidden="true"></span>
-      {showText && (
-        <span className={styles.text}>
-          {getStatusText(status)}
+    <div className={`flex items-center gap-2 ${className}`}>
+      <div className={`rounded-full ${sizes.dot} ${colors.dot}`} />
+      {showLabel && (
+        <span className={`font-medium ${sizes.text} ${colors.text}`}>
+          {displayLabel}
         </span>
       )}
     </div>

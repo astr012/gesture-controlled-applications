@@ -10,7 +10,7 @@ import PerformanceMonitor from '@/services/PerformanceMonitor';
 import { browserCompatibility } from '@/utils/browserCompatibility';
 import { integrationValidator } from '@/utils/integrationValidator';
 import { bundleAnalyzer } from '@/utils/bundleAnalyzer';
-import '@/styles/globals.css';
+import '@/index.css';
 import { useEffect, Suspense } from 'react';
 
 // Initialize services
@@ -19,25 +19,30 @@ const performanceMonitor = PerformanceMonitor.getInstance();
 
 // Enhanced loading component with performance tracking
 const AppLoadingFallback = () => (
-  <div style={{
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    color: 'white',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
-  }}>
-    <div style={{
-      width: '60px',
-      height: '60px',
-      border: '3px solid rgba(255,255,255,0.3)',
-      borderTop: '3px solid white',
-      borderRadius: '50%',
-      animation: 'spin 1s linear infinite',
-      marginBottom: '20px'
-    }} />
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: 'white',
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+    }}
+  >
+    <div
+      style={{
+        width: '60px',
+        height: '60px',
+        border: '3px solid rgba(255,255,255,0.3)',
+        borderTop: '3px solid white',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+        marginBottom: '20px',
+      }}
+    />
     <h2 style={{ margin: '0 0 10px 0', fontSize: '24px', fontWeight: '600' }}>
       Gesture Control Platform
     </h2>
@@ -52,7 +57,6 @@ const AppLoadingFallback = () => (
     `}</style>
   </div>
 );
-
 
 function App() {
   useEffect(() => {
@@ -72,22 +76,32 @@ function App() {
         }
 
         // Initialize browser compatibility checking
-        const compatibilityIssues = browserCompatibility.getCompatibilityIssues();
-        const criticalIssues = compatibilityIssues.filter(issue => issue.severity === 'error');
+        const compatibilityIssues =
+          browserCompatibility.getCompatibilityIssues();
+        const criticalIssues = compatibilityIssues.filter(
+          issue => issue.severity === 'error'
+        );
 
         if (criticalIssues.length > 0) {
-          console.error('🚨 Critical browser compatibility issues detected:', criticalIssues);
+          console.error(
+            '🚨 Critical browser compatibility issues detected:',
+            criticalIssues
+          );
           errorLogger.logError(
-            new Error(`Browser compatibility issues: ${criticalIssues.map(i => i.feature).join(', ')}`),
+            new Error(
+              `Browser compatibility issues: ${criticalIssues.map(i => i.feature).join(', ')}`
+            ),
             'browser-compatibility'
           );
 
           // Show compatibility warning to user
-          if (window.confirm(
-            `Your browser has compatibility issues that may affect the application. ` +
-            `Critical issues: ${criticalIssues.map(i => i.feature).join(', ')}. ` +
-            `Would you like to continue anyway?`
-          )) {
+          if (
+            window.confirm(
+              `Your browser has compatibility issues that may affect the application. ` +
+                `Critical issues: ${criticalIssues.map(i => i.feature).join(', ')}. ` +
+                `Would you like to continue anyway?`
+            )
+          ) {
             console.warn('User chose to continue despite compatibility issues');
           }
         }
@@ -103,7 +117,9 @@ function App() {
             integrationValidator.logIntegrationReport(report);
 
             if (report.overallStatus === 'fail') {
-              console.error('❌ Integration tests failed. Some features may not work correctly.');
+              console.error(
+                '❌ Integration tests failed. Some features may not work correctly.'
+              );
             } else if (report.overallStatus === 'warning') {
               console.warn('⚠️ Integration tests completed with warnings.');
             } else {
@@ -143,7 +159,8 @@ function App() {
         if ((performance as any).memory) {
           setInterval(() => {
             const memory = (performance as any).memory;
-            const usagePercent = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
+            const usagePercent =
+              (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
 
             if (usagePercent > 80) {
               console.warn(`⚠️ High memory usage: ${usagePercent.toFixed(1)}%`);
@@ -156,7 +173,7 @@ function App() {
         }
 
         // Set up error tracking for unhandled errors
-        window.addEventListener('error', (event) => {
+        window.addEventListener('error', event => {
           errorLogger.logError(event.error, 'unhandled-error', {
             filename: event.filename,
             lineno: event.lineno,
@@ -165,14 +182,13 @@ function App() {
           performanceMonitor.recordError();
         });
 
-        window.addEventListener('unhandledrejection', (event) => {
+        window.addEventListener('unhandledrejection', event => {
           errorLogger.logError(
             new Error(`Unhandled promise rejection: ${event.reason}`),
             'unhandled-promise-rejection'
           );
           performanceMonitor.recordError();
         });
-
       } catch (error) {
         console.error('❌ App initialization failed:', error);
         errorLogger.logError(error as Error, 'app-initialization');

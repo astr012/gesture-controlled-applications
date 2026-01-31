@@ -1,35 +1,29 @@
-import { Suspense } from 'react';
-import LoadingSpinner from './LoadingSpinner';
-import styles from './SuspenseWrapper.module.css';
+/**
+ * SuspenseWrapper Component
+ *
+ * A wrapper for React Suspense with a nice loading fallback.
+ * Uses Tailwind CSS for all styling.
+ */
 
-interface SuspenseWrapperProps {
+import React, { Suspense } from 'react';
+import LoadingSpinner from './LoadingSpinner';
+
+export interface SuspenseWrapperProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
-  minimal?: boolean;
 }
 
-const AppleStyleFallback: React.FC<{ minimal?: boolean }> = ({ minimal = false }) => (
-  <div className={minimal ? styles.minimalContainer : styles.fallbackContainer}>
-    <div className={styles.fallbackContent}>
-      <LoadingSpinner size={minimal ? 'md' : 'lg'} />
-      {!minimal && (
-        <>
-          <div className={styles.shimmerText} />
-          <div className={styles.shimmerTextSmall} />
-        </>
-      )}
-    </div>
+const DefaultFallback = () => (
+  <div className="flex items-center justify-center min-h-[200px] w-full">
+    <LoadingSpinner size="lg" />
   </div>
 );
 
-const SuspenseWrapper: React.FC<SuspenseWrapperProps> = ({ 
-  children, 
-  fallback,
-  minimal = false 
-}) => (
-  <Suspense fallback={fallback || <AppleStyleFallback minimal={minimal} />}>
-    {children}
-  </Suspense>
-);
+const SuspenseWrapper: React.FC<SuspenseWrapperProps> = ({
+  children,
+  fallback = <DefaultFallback />,
+}) => {
+  return <Suspense fallback={fallback}>{children}</Suspense>;
+};
 
 export default SuspenseWrapper;

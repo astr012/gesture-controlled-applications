@@ -1,188 +1,84 @@
 /**
- * Route-level Error Boundary - Handles routing and navigation errors
- * Provides route-specific error handling and recovery options
+ * RouteErrorBoundary Component
+ *
+ * An error boundary for route-level errors.
+ * Uses Tailwind CSS for all styling.
  */
 
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import ErrorBoundary, { type ErrorLogger, type ErrorContext } from './ErrorBoundary';
-import type { ErrorInfo } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import Button from './Button/Button';
 
-interface RouteErrorBoundaryProps {
-  children: React.ReactNode;
-  fallbackRoute?: string;
-  logger?: ErrorLogger;
+interface Props {
+  children: ReactNode;
 }
 
-// Route-level error logger
-class RouteErrorLogger implements ErrorLogger {
-  logError(error: Error, errorInfo: ErrorInfo, context: ErrorContext, severity: 'low' | 'medium' | 'high' | 'critical'): void {
-    const logData = {
-      level: 'route',
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      },
-      errorInfo: {
-        componentStack: errorInfo.componentStack,
-      },
-      context: {
-        ...context,
-        level: 'route',
-      },
-      severity,
-      timestamp: Date.now(),
-      route: window.location.pathname,
-      search: window.location.search,
-      hash: window.location.hash,
-      referrer: document.referrer,
-    };
-
-    console.group('🛣️ ROUTE-LEVEL ERROR');
-    console.error('Error:', error);
-    console.error('Error Info:', errorInfo);
-    console.log('Route Context:', logData);
-    console.groupEnd();
-
-    // Store route errors separately
-    try {
-      const routeErrors = JSON.parse(localStorage.getItem('route-errors') || '[]');
-      routeErrors.push(logData);
-      // Keep only last 20 route errors
-      if (routeErrors.length > 20) {
-        routeErrors.splice(0, routeErrors.length - 20);
-      }
-      localStorage.setItem('route-errors', JSON.stringify(routeErrors));
-    } catch (storageError) {
-      console.warn('Failed to store route error:', storageError);
-    }
-
-    // In production, send to monitoring service
-    if (process.env.NODE_ENV === 'production') {
-      // Example: Sentry.captureException(error, { 
-      //   level: severity === 'critical' ? 'fatal' : 'error',
-      //   extra: logData,
-      //   tags: { errorBoundary: 'route' }
-      // });
-    }
-  }
-
-  logUserAction(action: string, context: Partial<ErrorContext>): void {
-    console.log(`👤 Route User Action: ${action}`, context);
-  }
+interface State {
+  hasError: boolean;
+  error: Error | null;
 }
 
-const RouteErrorBoundaryComponent: React.FC<RouteErrorBoundaryProps> = ({
-  children,
-  fallbackRoute = '/',
-  logger
-}) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const routeLogger = logger || new RouteErrorLogger();
+class RouteErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
 
-  const handleRouteError = (error: Error, errorInfo: ErrorInfo, context: ErrorContext) => {
-    console.error('Route-level error occurred:', error);
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
 
-    // Track problematic routes
-    try {
-      const problemRoutes = JSON.parse(localStorage.getItem('problem-routes') || '{}');
-      const currentRoute = location.pathname;
-      problemRoutes[currentRoute] = (problemRoutes[currentRoute] || 0) + 1;
-      localStorage.setItem('problem-routes', JSON.stringify(problemRoutes));
-    } catch (trackError) {
-      console.warn('Failed to track problem route:', trackError);
-    }
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('RouteErrorBoundary caught an error:', error, errorInfo);
+  }
+
+  handleGoHome = () => {
+    window.location.href = '/';
   };
 
-  const handleRetry = () => {
-    console.log('Route-level retry initiated');
-    // For route errors, we might want to navigate to a safe route
-    if (location.pathname !== fallbackRoute) {
-      navigate(fallbackRoute, { replace: true });
-    } else {
-      // If we're already on the fallback route, just reload
-      window.location.reload();
-    }
+  handleRetry = () => {
+    this.setState({ hasError: false, error: null });
   };
 
-  const getRouteSpecificFallback = () => {
-    const currentPath = location.pathname;
-
-    // Provide route-specific error messages
-    if (currentPath.startsWith('/project/')) {
+  render() {
+    if (this.state.hasError) {
       return (
-        <div style={{
-          padding: '2rem',
-          textAlign: 'center',
-          background: 'white',
-          borderRadius: '12px',
-          margin: '2rem',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎯</div>
-          <h2 style={{ color: '#171717', marginBottom: '0.5rem' }}>Project Loading Error</h2>
-          <p style={{ color: '#737373', marginBottom: '1.5rem' }}>
-            We couldn't load the requested project. This might be due to a missing project file or configuration issue.
+        <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+          <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-warning-100 dark:bg-warning-500/20">
+            <svg
+              className="w-8 h-8 text-warning-600 dark:text-warning-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+
+          <h2 className="mb-2 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+            Page Error
+          </h2>
+
+          <p className="mb-6 text-sm text-neutral-600 dark:text-neutral-400 max-w-md">
+            There was an error loading this page. Please try again or go back to
+            the dashboard.
           </p>
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-            <button
-              onClick={() => navigate('/', { replace: true })}
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: '#007aff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: '500'
-              }}
-            >
+
+          <div className="flex gap-3">
+            <Button onClick={this.handleRetry} variant="secondary">
+              Try Again
+            </Button>
+            <Button onClick={this.handleGoHome} variant="primary">
               Go to Dashboard
-            </button>
-            <button
-              onClick={() => window.location.reload()}
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: '#f5f5f5',
-                color: '#525252',
-                border: '1px solid #e5e5e5',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                fontWeight: '500'
-              }}
-            >
-              Refresh Page
-            </button>
+            </Button>
           </div>
         </div>
       );
     }
 
-    return null; // Use default error boundary fallback
-  };
+    return this.props.children;
+  }
+}
 
-  return (
-    <ErrorBoundary
-      level="route"
-      context={{
-        component: 'RouteErrorBoundary',
-        route: location.pathname,
-        search: location.search,
-        hash: location.hash,
-      }}
-      onError={handleRouteError}
-      onRetry={handleRetry}
-      showRetry={true}
-      showRefresh={true}
-      showReportBug={true}
-      logger={routeLogger}
-      fallback={getRouteSpecificFallback()}
-    >
-      {children}
-    </ErrorBoundary>
-  );
-};
-
-export default RouteErrorBoundaryComponent;
+export default RouteErrorBoundary;

@@ -4,18 +4,36 @@
  */
 
 import React from 'react';
-import { FingerCountData } from '../../types/gesture';
-import {
-  Hand,
-  AlignVerticalJustifyCenter,
-  AlignVerticalJustifyEnd,
-} from 'lucide-react';
+import type { FingerCountData } from '../../types/gesture';
+import { Hand, Radio } from 'lucide-react';
 
 interface Props {
-  data: FingerCountData;
+  data: FingerCountData | null;
 }
 
 export const FingerCountDisplay: React.FC<Props> = ({ data }) => {
+  // Empty state when no data
+  if (!data) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="p-6 rounded-2xl bg-neutral-100 dark:bg-neutral-800 mb-4">
+          <Radio
+            size={48}
+            className="text-neutral-400 dark:text-neutral-500"
+            strokeWidth={1.5}
+          />
+        </div>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+          Waiting for Connection
+        </h3>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-sm">
+          Start the gesture detection service and show your hand to the camera
+          to count fingers.
+        </p>
+      </div>
+    );
+  }
+
   const renderFingerState = (isUp: boolean) => (
     <div
       className={`

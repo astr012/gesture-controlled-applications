@@ -1,14 +1,23 @@
 /**
  * Virtual Mouse Project Module
- * Lazy-loaded component for virtual mouse gesture control
- * Follows standardized project interface with enhanced metadata
+ *
+ * Enterprise-grade module for gesture-based cursor control.
+ * Uses the ProjectShowcasePage template for consistent UX.
  */
 
-import React from 'react';
-import type { ProjectDisplayProps, ProjectMetadata, ProjectSettings } from '@/types/project';
+import React, { useState } from 'react';
+import { MousePointer2 } from 'lucide-react';
+import type {
+  ProjectDisplayProps,
+  ProjectMetadata,
+  ProjectSettings,
+} from '@/types/project';
+import { ProjectShowcasePage } from '@/components/ProjectShowcase';
 import { VirtualMouseDisplay } from '@/components/GestureDisplay/VirtualMouseDisplay';
+import VirtualMouseSettings from './VirtualMouseSettings';
+import VirtualMouseMetrics from './VirtualMouseMetrics';
 
-// Project metadata
+// Module metadata
 export const metadata: ProjectMetadata = {
   name: 'Virtual Mouse',
   description: 'Control cursor and clicks with precise hand movements',
@@ -16,7 +25,13 @@ export const metadata: ProjectMetadata = {
   author: 'Gesture Control Platform',
   category: 'advanced',
   requirements: ['MediaPipe', 'Cursor Control API'],
-  features: ['Cursor Movement', 'Click Gestures', 'Smoothing', 'Calibration', 'Multi-gesture Support'],
+  features: [
+    'Cursor Movement',
+    'Click Gestures',
+    'Smoothing',
+    'Calibration',
+    'Multi-gesture Support',
+  ],
   tags: ['mouse', 'cursor', 'advanced', 'precision'],
   documentation: '/docs/projects/virtual-mouse',
   lastUpdated: '2024-01-11',
@@ -26,12 +41,11 @@ export const metadata: ProjectMetadata = {
   },
 };
 
-// Default settings for this project
+// Default settings
 export const defaultSettings: ProjectSettings = {
   displayMode: 'detailed',
   showDebugInfo: false,
   sensitivity: 1.0,
-  // Project-specific settings
   smoothing: false,
   clickEnabled: true,
   dragEnabled: true,
@@ -40,153 +54,72 @@ export const defaultSettings: ProjectSettings = {
   clickThreshold: 0.8,
 };
 
-// Settings validation function
+// Settings validation
 export const validateSettings = (settings: ProjectSettings): boolean => {
-  if (typeof settings.sensitivity !== 'number' || settings.sensitivity < 0.1 || settings.sensitivity > 2.0) {
+  if (
+    typeof settings.sensitivity !== 'number' ||
+    settings.sensitivity < 0.1 ||
+    settings.sensitivity > 2.0
+  ) {
     return false;
   }
-  if (typeof settings.cursorSpeed === 'number' && (settings.cursorSpeed < 0.1 || settings.cursorSpeed > 3.0)) {
+  if (
+    typeof settings.cursorSpeed === 'number' &&
+    (settings.cursorSpeed < 0.1 || settings.cursorSpeed > 3.0)
+  ) {
     return false;
   }
-  if (typeof settings.clickThreshold === 'number' && (settings.clickThreshold < 0.1 || settings.clickThreshold > 1.0)) {
+  if (
+    typeof settings.clickThreshold === 'number' &&
+    (settings.clickThreshold < 0.1 || settings.clickThreshold > 1.0)
+  ) {
     return false;
   }
   return true;
 };
 
-// Main display component
+// Main Project Component
 const VirtualMouseProject: React.FC<ProjectDisplayProps> = ({
   gestureData,
   settings,
   onSettingsChange,
+  connectionStatus,
 }) => {
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Extract virtual mouse data
+  const mouseData = gestureData?.virtual_mouse ?? null;
+  const isConnected = connectionStatus?.connected ?? false;
+  const isStreaming = !!mouseData;
+
   return (
-    <div>
-      <VirtualMouseDisplay
-        data={gestureData}
-      />
-
-      {settings.displayMode === 'detailed' && (
-        <div style={{ marginTop: '2rem' }}>
-          <h3>Virtual Mouse Settings</h3>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <label>
-              <input
-                type="checkbox"
-                checked={settings.showDebugInfo}
-                onChange={(e) => onSettingsChange({
-                  ...settings,
-                  showDebugInfo: e.target.checked
-                })}
-              />
-              Show Debug Information
-            </label>
-
-            <div>
-              <label>
-                Mouse Sensitivity: {settings.sensitivity}
-                <input
-                  type="range"
-                  min="0.1"
-                  max="2.0"
-                  step="0.1"
-                  value={settings.sensitivity}
-                  onChange={(e) => onSettingsChange({
-                    ...settings,
-                    sensitivity: parseFloat(e.target.value)
-                  })}
-                />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                Cursor Speed: {settings.cursorSpeed || 1.0}
-                <input
-                  type="range"
-                  min="0.1"
-                  max="3.0"
-                  step="0.1"
-                  value={settings.cursorSpeed || 1.0}
-                  onChange={(e) => onSettingsChange({
-                    ...settings,
-                    cursorSpeed: parseFloat(e.target.value)
-                  })}
-                />
-              </label>
-            </div>
-
-            <div>
-              <label>
-                Click Threshold: {settings.clickThreshold || 0.8}
-                <input
-                  type="range"
-                  min="0.1"
-                  max="1.0"
-                  step="0.1"
-                  value={settings.clickThreshold || 0.8}
-                  onChange={(e) => onSettingsChange({
-                    ...settings,
-                    clickThreshold: parseFloat(e.target.value)
-                  })}
-                />
-              </label>
-            </div>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={settings.smoothing || false}
-                onChange={(e) => onSettingsChange({
-                  ...settings,
-                  smoothing: e.target.checked
-                })}
-              />
-              Enable Mouse Smoothing
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={settings.clickEnabled ?? true}
-                onChange={(e) => onSettingsChange({
-                  ...settings,
-                  clickEnabled: e.target.checked
-                })}
-              />
-              Enable Click Gestures
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={settings.dragEnabled ?? true}
-                onChange={(e) => onSettingsChange({
-                  ...settings,
-                  dragEnabled: e.target.checked
-                })}
-              />
-              Enable Drag Gestures
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={settings.scrollEnabled || false}
-                onChange={(e) => onSettingsChange({
-                  ...settings,
-                  scrollEnabled: e.target.checked
-                })}
-              />
-              Enable Scroll Gestures
-            </label>
-          </div>
-        </div>
-      )}
-    </div>
+    <ProjectShowcasePage
+      projectId="virtual_mouse"
+      name={metadata.name}
+      description={metadata.description}
+      category={metadata.category}
+      icon={<MousePointer2 size={20} />}
+      isConnected={isConnected}
+      isStreaming={isStreaming}
+      settingsOpen={settingsOpen}
+      onSettingsToggle={() => setSettingsOpen(!settingsOpen)}
+      settingsPanel={
+        <VirtualMouseSettings
+          settings={settings}
+          onSettingsChange={onSettingsChange}
+        />
+      }
+      metricsPanel={
+        <VirtualMouseMetrics
+          data={mouseData}
+          fps={connectionStatus?.fps ?? 0}
+          latency={connectionStatus?.latency ?? 0}
+        />
+      }
+    >
+      <VirtualMouseDisplay data={mouseData} />
+    </ProjectShowcasePage>
   );
 };
 
-// Export the component as default for lazy loading
 export default VirtualMouseProject;

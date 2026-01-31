@@ -4,21 +4,43 @@
  */
 
 import React from 'react';
-import { VirtualMouseData } from '../../types/gesture';
+import type { VirtualMouseData } from '../../types/gesture';
 import {
   MousePointer2,
   Move,
   MousePointerClick,
   Scroll,
   Info,
-  CheckCircle2,
+  Radio,
 } from 'lucide-react';
 
 interface Props {
-  data: VirtualMouseData;
+  data: VirtualMouseData | null;
 }
 
 export const VirtualMouseDisplay: React.FC<Props> = ({ data }) => {
+  // Empty state when no data
+  if (!data) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="p-6 rounded-2xl bg-neutral-100 dark:bg-neutral-800 mb-4">
+          <Radio
+            size={48}
+            className="text-neutral-400 dark:text-neutral-500"
+            strokeWidth={1.5}
+          />
+        </div>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+          Waiting for Connection
+        </h3>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-sm">
+          Start the gesture detection service and show your hand to the camera
+          to control the cursor.
+        </p>
+      </div>
+    );
+  }
+
   const getModeColor = () => {
     switch (data.gesture_mode) {
       case 'move':

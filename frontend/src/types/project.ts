@@ -52,6 +52,11 @@ export interface ProjectDisplayProps {
   gestureData: GestureData | null;
   settings: ProjectSettings;
   onSettingsChange: (settings: ProjectSettings) => void;
+  connectionStatus?: {
+    connected: boolean;
+    fps?: number;
+    latency?: number;
+  };
 }
 
 export interface ProjectSettingsProps {

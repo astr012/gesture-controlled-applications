@@ -1,6 +1,8 @@
 /**
  * ProjectLoader - Handles lazy loading of project modules with error boundaries
- * Uses Tailwind CSS for all styling
+ *
+ * Simplified loader that delegates UI to the project modules themselves,
+ * which use the ProjectShowcasePage template for consistent presentation.
  */
 
 import React, { Suspense, useState, useEffect } from 'react';
@@ -17,7 +19,6 @@ import { useWebSocket } from '@/hooks/useWebSocket';
 import ProjectErrorBoundary from '@/components/ui/ProjectErrorBoundary';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
 import Card from '@/components/ui/Card';
 import ErrorLoggingService from '@/services/ErrorLoggingService';
 import { withPerformanceTracking } from '@/services/PerformanceMonitor';
@@ -27,23 +28,7 @@ interface ProjectLoaderProps {
   gestureData?: any;
 }
 
-const ProjectLoadingFallback: React.FC<{ projectName: string }> = ({
-  projectName,
-}) => (
-  <div className="flex items-center justify-center min-h-[400px]">
-    <div className="flex flex-col items-center text-center p-8">
-      <LoadingSpinner size="lg" />
-      <h2 className="mt-4 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
-        Loading {projectName}
-      </h2>
-      <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-        Preparing your gesture control experience...
-      </p>
-    </div>
-  </div>
-);
-
-// Loading stage component
+// Loading/Error state component
 const ProjectLoading: React.FC<{
   stage: string;
   projectName: string;
@@ -52,11 +37,11 @@ const ProjectLoading: React.FC<{
 }> = ({ stage, projectName, error, onRetry }) => {
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Card className="max-w-md text-center">
-          <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-error-100 dark:bg-error-500/20">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950">
+        <Card className="max-w-md text-center" padding="lg">
+          <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/20">
             <svg
-              className="w-8 h-8 text-error-600 dark:text-error-400"
+              className="w-8 h-8 text-red-600 dark:text-red-400"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -67,10 +52,10 @@ const ProjectLoading: React.FC<{
               <path d="m9 9 6 6" />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
+          <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
             Failed to load {projectName}
           </h3>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+          <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
             {error}
           </p>
           <Button onClick={onRetry} variant="primary">
@@ -89,13 +74,13 @@ const ProjectLoading: React.FC<{
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-950">
       <div className="flex flex-col items-center text-center p-8">
         <LoadingSpinner size="lg" />
-        <h2 className="mt-4 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+        <h2 className="mt-4 text-xl font-semibold text-neutral-900 dark:text-white">
           {projectName}
         </h2>
-        <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
           {stageMessages[stage] || 'Loading...'}
         </p>
       </div>
@@ -209,94 +194,24 @@ const ProjectLoader: React.FC<ProjectLoaderProps> = ({
     );
   }
 
+  // Render the project component directly - it handles its own layout via ProjectShowcasePage
   return (
     <ProjectErrorBoundary projectName={projectConfig.name}>
       <Suspense
-        fallback={<ProjectLoadingFallback projectName={projectConfig.name} />}
+        fallback={
+          <ProjectLoading
+            stage="loading"
+            projectName={projectConfig.name}
+            onRetry={handleRetry}
+          />
+        }
       >
-        <div className="max-w-6xl mx-auto">
-          {/* Project Header */}
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-primary-100 dark:bg-primary-500/20 text-primary-600 dark:text-primary-400 text-2xl">
-                {projectConfig.icon}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-                  {projectConfig.name}
-                </h1>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                  {projectConfig.description}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="default">v{projectConfig.version}</Badge>
-              <Badge
-                variant={
-                  projectConfig.category === 'basic' ? 'success' : 'accent'
-                }
-              >
-                {projectConfig.category}
-              </Badge>
-            </div>
-          </div>
-
-          {/* Project Tags */}
-          {projectConfig.metadata && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {projectConfig.metadata.tags.map(tag => (
-                <Badge key={tag} variant="default" size="sm">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          {/* Project Content */}
-          <Card padding="lg">
-            <ProjectComponent
-              gestureData={gestureData}
-              settings={state.settings}
-              onSettingsChange={actions.updateSettings}
-            />
-          </Card>
-
-          {/* Debug Information */}
-          {state.showDebugInfo && projectConfig.metadata && (
-            <Card className="mt-6 bg-neutral-50 dark:bg-neutral-800/50">
-              <h3 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-3">
-                Debug Information
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                <div>
-                  <span className="text-neutral-500">Project ID:</span>
-                  <span className="ml-2 text-neutral-900 dark:text-neutral-100">
-                    {projectConfig.id}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-neutral-500">Version:</span>
-                  <span className="ml-2 text-neutral-900 dark:text-neutral-100">
-                    {projectConfig.metadata.version}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-neutral-500">Author:</span>
-                  <span className="ml-2 text-neutral-900 dark:text-neutral-100">
-                    {projectConfig.metadata.author}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-neutral-500">Loading Stage:</span>
-                  <span className="ml-2 text-neutral-900 dark:text-neutral-100">
-                    {loadingStage}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          )}
-        </div>
+        <ProjectComponent
+          gestureData={gestureData}
+          settings={state.settings}
+          onSettingsChange={actions.updateSettings}
+          connectionStatus={connectionStatus}
+        />
       </Suspense>
     </ProjectErrorBoundary>
   );

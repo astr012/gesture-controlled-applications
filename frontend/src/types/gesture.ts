@@ -12,6 +12,10 @@ export interface GestureData {
   confidence: number;
   processing_time: number;
   frame_id: string;
+  // Project-specific data (only one will be present based on project type)
+  finger_count?: FingerCountData;
+  volume_control?: VolumeControlData;
+  virtual_mouse?: VirtualMouseData;
 }
 
 // Enhanced finger count data
@@ -86,5 +90,3 @@ export interface VirtualMouseData extends GestureData {
 export type HandData = EnhancedHandData;
 
 // Re-export types from other modules for convenience
-
-

@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { VolumeControlData } from '../../types/gesture';
+import type { VolumeControlData } from '../../types/gesture';
 import {
   Volume,
   Volume1,
@@ -13,13 +13,36 @@ import {
   Maximize2,
   Minimize2,
   Activity,
+  Radio,
 } from 'lucide-react';
 
 interface Props {
-  data: VolumeControlData;
+  data: VolumeControlData | null;
 }
 
 export const VolumeControlDisplay: React.FC<Props> = ({ data }) => {
+  // Empty state when no data
+  if (!data) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="p-6 rounded-2xl bg-neutral-100 dark:bg-neutral-800 mb-4">
+          <Radio
+            size={48}
+            className="text-neutral-400 dark:text-neutral-500"
+            strokeWidth={1.5}
+          />
+        </div>
+        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+          Waiting for Connection
+        </h3>
+        <p className="text-sm text-neutral-500 dark:text-neutral-400 max-w-sm">
+          Start the gesture detection service and show your hand to the camera
+          to control volume.
+        </p>
+      </div>
+    );
+  }
+
   const volumePercentage = Math.round(data.volume_level * 100);
 
   const getVolumeIcon = () => {
